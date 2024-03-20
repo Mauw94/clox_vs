@@ -2,6 +2,7 @@
 #include "common.h"
 #include "vm.h"
 #include "debug.h"
+#include "compiler.h"
 
 VM vm;
 
@@ -44,7 +45,7 @@ static InterpretResult run() {
 			printf("[ ");
 			printValue(*slot);
 			printf(" ]");
-	}
+		}
 		printf("\n");
 		disassembleInstruction(vm.chunk, (int)(vm.ip - vm.chunk->code));
 #endif
@@ -69,15 +70,14 @@ static InterpretResult run() {
 			return INTERPRET_OK;
 		}
 		}
-}
+	}
 
 #undef READ_BYTE
 #undef READ_CONSTANT
 #undef BINARY_OP
 }
 
-InterpretResult interpret(Chunk* chunk) {
-	vm.chunk = chunk;
-	vm.ip = vm.chunk->code;
-	return run();
+InterpretResult interpret(const char* source) {
+	compile(source);
+	return INTERPRET_OK;
 }
